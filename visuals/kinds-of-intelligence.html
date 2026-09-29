@@ -1,0 +1,334 @@
+<title>Kinds of Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #f5f6f3;
+    --ink: #1c201d;
+    --muted: #7b827d;
+    --faint: #b9beb9;
+    --line: #dfe2dd;
+    --accent: #3e6a4f;
+    --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+    --sans: "Geist", -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #121513;
+      --ink: #e6e9e5;
+      --muted: #8d948f;
+      --faint: #4c524e;
+      --line: #262b28;
+      --accent: #8fbf9f;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #121513;
+    --ink: #e6e9e5;
+    --muted: #8d948f;
+    --faint: #4c524e;
+    --line: #262b28;
+    --accent: #8fbf9f;
+  }
+
+  html, body { background: var(--bg); }
+  body {
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.5;
+    padding-inline: 20px;
+    padding-block: 48px 64px;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; display: grid; gap: 28px; }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(34px, 6vw, 48px);
+    line-height: 1.05;
+    margin: 0;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  h1 em { color: var(--muted); }
+  .lede { margin: 10px 0 0; color: var(--muted); max-width: 52ch; }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: 16px 24px;
+  }
+  .field { display: grid; gap: 4px; }
+  .field label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+  select {
+    font: inherit;
+    font-size: 15px;
+    color: var(--ink);
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--faint);
+    padding: 4px 22px 4px 0;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(-45deg, transparent 50%, var(--muted) 50%);
+    background-size: 4px 4px;
+    background-position: right 8px center, right 4px center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    min-width: 0;
+  }
+  select:focus-visible, button:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
+  select option { background: var(--bg); color: var(--ink); }
+  .swap {
+    font: inherit;
+    font-size: 13px;
+    color: var(--muted);
+    background: none;
+    border: 0;
+    padding: 4px 0;
+    cursor: pointer;
+  }
+  .swap:hover { color: var(--ink); }
+
+  .chart { width: 100%; max-width: 100%; aspect-ratio: 1; display: block; overflow: visible; }
+  .chart .grid { stroke: var(--line); stroke-width: 1; }
+  .chart .axis { stroke: var(--faint); stroke-width: 1; }
+  .chart .tick { fill: var(--faint); font: 10px var(--sans); }
+  .chart .end { fill: var(--muted); font: 11px var(--sans); letter-spacing: 0.02em; }
+  .chart .axname { fill: var(--ink); font: italic 17px var(--serif); }
+  .dot { cursor: pointer; transition: transform 700ms cubic-bezier(.2,.7,.2,1); }
+  .dot text { font-size: 30px; dominant-baseline: central; text-anchor: middle; user-select: none; transition: opacity 250ms; }
+  .dot .ring { fill: none; stroke: var(--accent); stroke-width: 1; opacity: 0; transition: opacity 250ms; }
+  .dot.on .ring { opacity: 1; }
+  .chart.focus .dot:not(.on) text { opacity: 0.28; }
+  @media (prefers-reduced-motion: reduce) { .dot { transition: none; } }
+
+  .legend {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+    gap: 4px;
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+  }
+  .legend button {
+    font: inherit;
+    color: var(--muted);
+    background: none;
+    border: 0;
+    padding: 6px 0;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .legend button span:first-child { font-size: 18px; }
+  .legend button:hover, .legend button.on { color: var(--ink); }
+
+  .note { min-height: 72px; }
+  .note h2 { font-family: var(--serif); font-weight: 400; font-size: 24px; margin: 0; }
+  .note p { margin: 4px 0 0; color: var(--muted); max-width: 60ch; }
+  .note .vals { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  .foot { color: var(--muted); font-size: 12px; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Kinds of intelligence <em>are not one scale</em></h1>
+    <p class="lede">Pick any two axes. Each intelligence moves, and none of them wins everywhere.</p>
+  </header>
+
+  <div class="controls">
+    <div class="field">
+      <label for="ax-x">Horizontal</label>
+      <select id="ax-x"></select>
+    </div>
+    <div class="field">
+      <label for="ax-y">Vertical</label>
+      <select id="ax-y"></select>
+    </div>
+    <button class="swap" id="swap" type="button">Swap axes</button>
+  </div>
+
+  <svg class="chart" id="chart" viewBox="0 0 600 600" role="img" aria-label="Scatter chart of six kinds of intelligence on two chosen axes"></svg>
+
+  <div class="note" id="note" aria-live="polite"></div>
+
+  <div class="legend" id="legend"></div>
+
+  <p class="foot">Scores run from 0 to 10 and are rough judgments for discussion, not measurements. Where science doesn't know, like AI awareness, the placement is a guess.</p>
+</div>
+
+<script>
+const AXES = [
+  { id: "speed",   name: "Speed",          lo: "seasons",        hi: "milliseconds" },
+  { id: "body",    name: "Body",           lo: "no body",        hi: "whole body thinks" },
+  { id: "spread",  name: "Structure",      lo: "one center",     hi: "fully distributed" },
+  { id: "learn",   name: "Learns while living", lo: "fixed",     hi: "constantly" },
+  { id: "energy",  name: "Energy needed",  lo: "almost none",    hi: "a data center" },
+  { id: "range",   name: "Range",          lo: "specialist",     hi: "generalist" },
+  { id: "senses",  name: "Senses",         lo: "few",            hi: "many" },
+  { id: "talk",    name: "Communication",  lo: "solitary",       hi: "language" },
+  { id: "memory",  name: "Knowledge held", lo: "little",         hi: "vast" },
+  { id: "agency",  name: "Own goals",      lo: "none",           hi: "fully its own" },
+  { id: "aware",   name: "Awareness",      lo: "none",           hi: "knows it exists" }
+];
+
+const BEINGS = [
+  { id: "plant", e: "🌱", name: "Plants",
+    about: "Sense light, gravity, touch, and damage, and decide by growing. Their intelligence is slow and spread through the whole body.",
+    v: { speed: 1, body: 9, spread: 8, learn: 2, energy: 0.5, range: 2, senses: 6, talk: 3, memory: 1.5, agency: 2.5, aware: 0.5 } },
+  { id: "fungi", e: "🍄", name: "Fungi",
+    about: "Mycelium networks link the trees of a forest underground, moving water, nutrients, and chemical signals. No brain and no center.",
+    v: { speed: 1.5, body: 8, spread: 10, learn: 2.5, energy: 1, range: 2.5, senses: 5, talk: 5.5, memory: 2, agency: 2.5, aware: 0.5 } },
+  { id: "octo", e: "🐙", name: "Octopus",
+    about: "About two-thirds of its neurons are in its arms, which taste and decide on their own. A body that does much of the thinking.",
+    v: { speed: 7, body: 10, spread: 7, learn: 7, energy: 2.5, range: 6, senses: 9, talk: 1.5, memory: 4, agency: 7, aware: 6 } },
+  { id: "ants", e: "🐜", name: "Ant colony",
+    about: "No single ant understands the plan, yet the colony builds, farms, and makes decisions through pheromone trails.",
+    v: { speed: 5, body: 7, spread: 9.5, learn: 3.5, energy: 1.5, range: 3.5, senses: 6, talk: 8, memory: 3, agency: 5, aware: 1.5 } },
+  { id: "human", e: "🧑", name: "Humans",
+    about: "One brain running on about 20 watts. Generalists: we do many things badly and a few things very well, and we tell stories about it.",
+    v: { speed: 5.5, body: 6.5, spread: 2, learn: 9, energy: 3.5, range: 9, senses: 7, talk: 10, memory: 6.5, agency: 9.5, aware: 9.5 } },
+  { id: "ai", e: "🤖", name: "AI",
+    about: "Fast, bodiless, and trained on more text and images than any person could read. It learns in training, not while you talk to it. Awareness is an open question.",
+    v: { speed: 10, body: 0.5, spread: 4.5, learn: 1.5, energy: 10, range: 8, senses: 3, talk: 9, memory: 10, agency: 2, aware: 3 } }
+];
+
+const svg = document.getElementById("chart");
+const sx = document.getElementById("ax-x");
+const sy = document.getElementById("ax-y");
+const note = document.getElementById("note");
+const legend = document.getElementById("legend");
+const NS = "http://www.w3.org/2000/svg";
+const P = { l: 64, r: 28, t: 28, b: 64 }, W = 600, H = 600;
+const px = v => P.l + (v / 10) * (W - P.l - P.r);
+const py = v => H - P.b - (v / 10) * (H - P.t - P.b);
+let selected = null;
+
+function el(tag, attrs, parent) {
+  const n = document.createElementNS(NS, tag);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+
+for (const a of AXES) {
+  sx.add(new Option(a.name, a.id));
+  sy.add(new Option(a.name, a.id));
+}
+sx.value = "speed";
+sy.value = "body";
+
+// static frame
+const frame = el("g", {}, svg);
+for (let i = 0; i <= 10; i += 2.5) {
+  el("line", { class: "grid", x1: px(i), x2: px(i), y1: py(0), y2: py(10) }, frame);
+  el("line", { class: "grid", x1: px(0), x2: px(10), y1: py(i), y2: py(i) }, frame);
+}
+el("line", { class: "axis", x1: px(0), x2: px(10), y1: py(0), y2: py(0) }, frame);
+el("line", { class: "axis", x1: px(0), x2: px(0), y1: py(0), y2: py(10) }, frame);
+const labels = el("g", {}, svg);
+
+// dots
+const layer = el("g", {}, svg);
+const dots = {};
+for (const b of BEINGS) {
+  const g = el("g", { class: "dot", tabindex: "0", role: "button", "aria-label": b.name }, layer);
+  el("circle", { class: "ring", r: 24 }, g);
+  const t = el("text", {}, g); t.textContent = b.e;
+  g.addEventListener("click", () => select(b.id));
+  g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(b.id); } });
+  dots[b.id] = g;
+
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.innerHTML = `<span>${b.e}</span><span>${b.name}</span>`;
+  btn.addEventListener("click", () => select(b.id));
+  btn.dataset.id = b.id;
+  legend.appendChild(btn);
+}
+
+function axis(id) { return AXES.find(a => a.id === id); }
+
+function drawLabels(ax, ay) {
+  labels.replaceChildren();
+  const bx = py(0) + 22, lx = px(0) - 14;
+  el("text", { class: "end", x: px(0), y: bx, "text-anchor": "start" }, labels).textContent = ax.lo;
+  el("text", { class: "end", x: px(10), y: bx, "text-anchor": "end" }, labels).textContent = ax.hi;
+  el("text", { class: "axname", x: (px(0) + px(10)) / 2, y: bx + 24, "text-anchor": "middle" }, labels).textContent = ax.name;
+
+  const yl = el("text", { class: "end", x: 0, y: 0, "text-anchor": "start", transform: `translate(${lx} ${py(0)}) rotate(-90)` }, labels);
+  yl.textContent = ay.lo;
+  const yh = el("text", { class: "end", x: 0, y: 0, "text-anchor": "end", transform: `translate(${lx} ${py(10)}) rotate(-90)` }, labels);
+  yh.textContent = ay.hi;
+  el("text", { class: "axname", x: 0, y: 0, "text-anchor": "middle", transform: `translate(${lx - 24} ${(py(0) + py(10)) / 2}) rotate(-90)` }, labels).textContent = ay.name;
+}
+
+function layout(xid, yid) {
+  // target positions, then gently push apart any emoji that overlap
+  const pts = BEINGS.map(b => ({ id: b.id, x: px(b.v[xid]), y: py(b.v[yid]) }));
+  const MIN = 40;
+  for (let it = 0; it < 60; it++) {
+    for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
+      const a = pts[i], c = pts[j];
+      let dx = c.x - a.x, dy = c.y - a.y, d = Math.hypot(dx, dy);
+      if (d < MIN) {
+        if (d < 0.01) { dx = 1; dy = 0.3; d = Math.hypot(dx, dy); }
+        const push = (MIN - d) / 2;
+        a.x -= dx / d * push; a.y -= dy / d * push;
+        c.x += dx / d * push; c.y += dy / d * push;
+      }
+    }
+  }
+  const lo = { x: px(0) + 16, y: py(10) + 16 }, hi = { x: px(10) - 16, y: py(0) - 16 };
+  for (const p of pts) {
+    p.x = Math.min(Math.max(p.x, lo.x), hi.x);
+    p.y = Math.min(Math.max(p.y, lo.y), hi.y);
+    dots[p.id].style.transform = `translate(${p.x}px, ${p.y}px)`;
+  }
+}
+
+function renderNote() {
+  const ax = axis(sx.value), ay = axis(sy.value);
+  if (!selected) {
+    note.innerHTML = `<p>Select an intelligence to read about it.</p>`;
+    return;
+  }
+  const b = BEINGS.find(b => b.id === selected);
+  note.innerHTML = `<h2>${b.e} ${b.name}</h2><p>${b.about}</p>
+    <p class="vals">${ax.name} ${b.v[ax.id]} · ${ay.name} ${b.v[ay.id]}</p>`;
+}
+
+function select(id) {
+  selected = selected === id ? null : id;
+  for (const k in dots) dots[k].classList.toggle("on", k === selected);
+  for (const btn of legend.children) btn.classList.toggle("on", btn.dataset.id === selected);
+  svg.classList.toggle("focus", !!selected);
+  renderNote();
+}
+
+function update() {
+  drawLabels(axis(sx.value), axis(sy.value));
+  layout(sx.value, sy.value);
+  renderNote();
+}
+
+sx.addEventListener("change", update);
+sy.addEventListener("change", update);
+document.getElementById("swap").addEventListener("click", () => {
+  const t = sx.value; sx.value = sy.value; sy.value = t; update();
+});
+
+update();
+</script>
